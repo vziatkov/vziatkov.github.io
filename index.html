@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vitalii Ziatkov — Frontend Engineer</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0a0a0a;
+            color: #e5e5e5;
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 720px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+
+        h1 {
+            font-size: 32px;
+            font-weight: 700;
+            color: #fff;
+            margin-bottom: 6px;
+        }
+
+        .tagline {
+            font-size: 15px;
+            color: #888;
+            margin-bottom: 40px;
+        }
+
+        .section {
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 10px;
+            font-weight: 700;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            color: #555;
+            margin-bottom: 16px;
+        }
+
+        .skills {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .skill {
+            font-size: 12px;
+            padding: 4px 12px;
+            border-radius: 4px;
+            background: #1a1a1a;
+            border: 1px solid #2a2a2a;
+            color: #ccc;
+        }
+
+        .skill.primary {
+            border-color: rgba(255, 120, 50, .3);
+            color: #ff8c42;
+        }
+
+        .project {
+            display: block;
+            padding: 20px;
+            background: #111;
+            border: 1px solid #222;
+            border-radius: 10px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            transition: border-color .2s, transform .15s;
+        }
+
+        .project:hover {
+            border-color: rgba(255, 120, 50, .4);
+            transform: translateY(-2px);
+        }
+
+        .project-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .project-name {
+            font-size: 16px;
+            font-weight: 600;
+            color: #fff;
+        }
+
+        .project-arrow {
+            color: #444;
+            font-size: 18px;
+            transition: color .2s;
+        }
+
+        .project:hover .project-arrow {
+            color: #ff8c42;
+        }
+
+        .project-desc {
+            font-size: 13px;
+            color: #888;
+            margin-bottom: 10px;
+        }
+
+        .project-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .project-tag {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 3px;
+            background: #1a1a1a;
+            color: #666;
+        }
+
+        .links {
+            display: flex;
+            gap: 20px;
+        }
+
+        .link {
+            font-size: 13px;
+            color: #888;
+            text-decoration: none;
+            transition: color .2s;
+        }
+
+        .link:hover {
+            color: #ff8c42;
+        }
+
+        .footer {
+            margin-top: 60px;
+            padding-top: 24px;
+            border-top: 1px solid #1a1a1a;
+            font-size: 11px;
+            color: #333;
+            text-align: center;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 40px 16px; }
+            h1 { font-size: 24px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Vitalii Ziatkov</h1>
+        <div class="tagline">Frontend Engineer — Real-time Graphics, Interactive UI, Game Development</div>
+
+        <div class="section">
+            <div class="section-title">Core Stack</div>
+            <div class="skills">
+                <span class="skill primary">TypeScript</span>
+                <span class="skill primary">Three.js</span>
+                <span class="skill primary">WebGL</span>
+                <span class="skill primary">GLSL</span>
+                <span class="skill primary">Pixi.js</span>
+                <span class="skill primary">React</span>
+                <span class="skill">Vite</span>
+                <span class="skill">Node.js</span>
+                <span class="skill">MobX</span>
+                <span class="skill">Canvas API</span>
+                <span class="skill">Web Animations</span>
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Projects</div>
+
+            <a class="project" href="https://vziatkov.github.io/neuro/" target="_blank">
+                <div class="project-header">
+                    <span class="project-name">Neuro</span>
+                    <span class="project-arrow">→</span>
+                </div>
+                <div class="project-desc">Interactive 3D neural network visualization engine. Custom GLSL shaders, real-time pulse propagation, 7 procedural formations, biometric simulation. 8.5K LOC solo.</div>
+                <div class="project-tags">
+                    <span class="project-tag">Three.js</span>
+                    <span class="project-tag">WebGL</span>
+                    <span class="project-tag">GLSL Shaders</span>
+                    <span class="project-tag">TypeScript</span>
+                    <span class="project-tag">Vite</span>
+                </div>
+            </a>
+
+            <a class="project" href="https://github.com/vziatkov/Game" target="_blank">
+                <div class="project-header">
+                    <span class="project-name">Game Engine</span>
+                    <span class="project-arrow">→</span>
+                </div>
+                <div class="project-desc">Game framework with Pixi.js rendering, React UI, MobX state management, and IndexedDB persistence.</div>
+                <div class="project-tags">
+                    <span class="project-tag">Pixi.js</span>
+                    <span class="project-tag">React</span>
+                    <span class="project-tag">MobX</span>
+                    <span class="project-tag">TypeScript</span>
+                    <span class="project-tag">IndexedDB</span>
+                </div>
+            </a>
+
+            <a class="project" href="https://github.com/vziatkov/ARPixiJs" target="_blank">
+                <div class="project-header">
+                    <span class="project-name">AR Pixi.js</span>
+                    <span class="project-arrow">→</span>
+                </div>
+                <div class="project-desc">Augmented reality layer built on Pixi.js with jsartoolkit5 marker tracking.</div>
+                <div class="project-tags">
+                    <span class="project-tag">Pixi.js</span>
+                    <span class="project-tag">AR</span>
+                    <span class="project-tag">WebGL</span>
+                    <span class="project-tag">JavaScript</span>
+                </div>
+            </a>
+
+            <a class="project" href="https://github.com/vziatkov/wifi-densepose" target="_blank">
+                <div class="project-header">
+                    <span class="project-name">WiFi DensePose</span>
+                    <span class="project-arrow">→</span>
+                </div>
+                <div class="project-desc">WiFi-based dense human pose estimation — full-body tracking through walls using commodity mesh routers.</div>
+                <div class="project-tags">
+                    <span class="project-tag">Signal Processing</span>
+                    <span class="project-tag">Computer Vision</span>
+                    <span class="project-tag">Research</span>
+                </div>
+            </a>
+        </div>
+
+        <div class="section">
+            <div class="section-title">Connect</div>
+            <div class="links">
+                <a class="link" href="https://github.com/vziatkov" target="_blank">GitHub</a>
+                <a class="link" href="https://www.linkedin.com/in/vitalii-ziatkov-457556106/" target="_blank">LinkedIn</a>
+                <a class="link" href="mailto:zyatkovvv87@gmail.com">Email</a>
+            </div>
+        </div>
+
+        <div class="footer">Riga · Building interactive experiences</div>
+    </div>
+</body>
+</html>
