@@ -212,6 +212,11 @@
             background: #0a0a0a;
         }
 
+        /* Golden ratio */
+        .art-golden {
+            background: #050508;
+        }
+
         /* Main neuro scene */
         .art-neuro {
             background: #000;
@@ -380,6 +385,15 @@
                     </div>
                 </a>
 
+                <a class="art-card art-golden" href="https://vziatkov.github.io/neuro/golden-ratio-geometry.html" target="_blank">
+                    <canvas class="art-canvas" id="art-golden"></canvas>
+                    <span class="art-live">LIVE</span>
+                    <div class="art-label">
+                        <span class="art-name">Golden Ratio Geometry</span>
+                        <span class="art-sub">Hidden φ in a square · r = (√5−1)/4 = 1/2φ</span>
+                    </div>
+                </a>
+
             </div>
         </div>
 
@@ -531,6 +545,63 @@
             });
         }
 
+        // Golden Ratio — square + circle + lines
+        function drawGolden(t) {
+            const s = initCanvas('art-golden');
+            if (!s) return;
+            const { ctx, w, h } = s;
+            ctx.clearRect(0, 0, w, h);
+
+            const sz = Math.min(w, h) * 0.65;
+            const ox = w * 0.45 - sz/2, oy = h * 0.5 - sz/2;
+
+            // Square
+            ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+            ctx.lineWidth = 1;
+            ctx.strokeRect(ox, oy, sz, sz);
+
+            // Diagonal
+            ctx.strokeStyle = 'rgba(255,255,255,0.4)';
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(ox + sz, oy + sz);
+            ctx.stroke();
+
+            // Line to midpoint
+            ctx.strokeStyle = 'rgba(68,204,102,0.5)';
+            ctx.beginPath();
+            ctx.moveTo(ox, oy);
+            ctx.lineTo(ox + sz * 0.5, oy + sz);
+            ctx.stroke();
+
+            // Circle
+            const R = (Math.sqrt(5) - 1) / 4;
+            const diagA = Math.PI / 4;
+            const midA = Math.atan2(1, 0.5);
+            const bisA = (diagA + midA) / 2;
+            const dFactor = Math.abs(Math.cos(bisA) - Math.sin(bisA)) / Math.sqrt(2);
+            const d = R / dFactor;
+            const ccx = ox + d * Math.cos(bisA) * sz;
+            const ccy = oy + d * Math.sin(bisA) * sz;
+            const cr = R * sz;
+            const pulse = 0.5 + 0.3 * Math.sin(t * 2);
+
+            ctx.strokeStyle = `rgba(238,68,68,${0.4 + pulse * 0.3})`;
+            ctx.lineWidth = 1.5;
+            ctx.shadowColor = 'rgba(238,68,68,0.4)';
+            ctx.shadowBlur = 8;
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, cr, 0, Math.PI * 2);
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            // Center dot
+            ctx.fillStyle = 'rgba(238,68,68,0.8)';
+            ctx.beginPath();
+            ctx.arc(ccx, ccy, 2, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
         let start = performance.now();
         function loop() {
             const t = (performance.now() - start) / 1000;
@@ -538,6 +609,7 @@
             drawHelix(t);
             drawBaccarat(t);
             drawStats(t);
+            drawGolden(t);
             requestAnimationFrame(loop);
         }
         loop();
