@@ -644,8 +644,8 @@
             }
             ctx.stroke();
 
-            // Circle (r ≈ 0.3863, center at (r, 1-r))
-            const r = 0.3863;
+            // Circle (r ≈ 0.3610, center at (r, 1-r))
+            const r = 0.3610;
             const ccx = ox + r * sz;
             const ccy = oy + r * sz;
             const pulse = 0.5 + 0.3 * Math.sin(t * 2);
@@ -661,7 +661,7 @@
 
             // Contact point
             ctx.fillStyle = 'rgba(68,204,102,0.8)';
-            const cpx = 0.6436, cpy = 0.6436 * 0.6436;
+            const cpx = 0.6466, cpy = 0.6466 * 0.6466;
             ctx.beginPath();
             ctx.arc(ox + cpx * sz, oy + (1 - cpy) * sz, 2.5, 0, Math.PI * 2);
             ctx.fill();
