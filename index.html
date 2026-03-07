@@ -349,6 +349,7 @@
         .art-hollow { background: #050508; }
         .art-tsp { background: #050508; }
         .art-crash { background: #0a0a0c; }
+        .art-crash3 { background: #0a0a0c; }
 
         @media (max-width: 480px) {
             .art-grid { grid-template-columns: 1fr; }
@@ -514,6 +515,15 @@
                     <div class="art-label">
                         <span class="art-name">Crash Engine v2</span>
                         <span class="art-sub">Monte Carlo · drought + wave + RTP · engine obfuscated</span>
+                    </div>
+                </a>
+
+                <a class="art-card art-crash3" href="https://vziatkov.github.io/neuro/crash-engine-v3.html" target="_blank" rel="noopener noreferrer">
+                    <canvas class="art-canvas" id="art-crash3"></canvas>
+                    <span class="art-live" aria-label="Live demo">LIVE</span>
+                    <div class="art-label">
+                        <span class="art-name">Crash Engine v3 — Live</span>
+                        <span class="art-sub">RTP corridor 94–104% · animated sim · win/loss color flow</span>
                     </div>
                 </a>
 
@@ -1148,6 +1158,43 @@
     ctx.fillText(data[data.length-1].toFixed(0), lastX + 6, headY + 3);
   }
 
+  // Crash v3 — live green/red balance curve
+  var c3data=[],c3idx=0,c3d=0;
+  function c3reset(){c3data=[];c3idx=0;c3d=0;var b=100;
+    for(var i=0;i<300;i++){var r=Math.random(),cr=Math.max(1,0.965/(1-r));
+      if(c3d>4)cr*=1+Math.log(c3d)*0.1;cr=Math.floor(cr*100)/100;
+      if(cr>=2){b+=1;c3d=0}else{b-=1;c3d++}c3data.push(b)}c3idx=0}
+  c3reset();
+
+  function drawCrash3(t){
+    var s=initCanvas('art-crash3');if(!s)return;
+    var ctx=s.ctx,w=s.w,h=s.h;ctx.clearRect(0,0,w,h);
+    c3idx=Math.min(c3data.length,c3idx+3);
+    if(c3idx>=c3data.length&&Math.floor(t*10)%80===0)c3reset();
+    var data=c3data.slice(0,c3idx);if(data.length<2)return;
+    var mn=Math.min.apply(null,data),mx=Math.max.apply(null,data);
+    var rng=mx-mn||1,pad=6,gw=w-pad*2,gh=h-pad*2;
+    // Green/red segments
+    for(var i=1;i<data.length;i++){
+      var x0=pad+((i-1)/(c3data.length-1))*gw;
+      var x1=pad+(i/(c3data.length-1))*gw;
+      var y0=pad+gh-((data[i-1]-mn)/rng)*gh;
+      var y1=pad+gh-((data[i]-mn)/rng)*gh;
+      ctx.strokeStyle=data[i]>data[i-1]?'rgba(68,255,136,0.6)':'rgba(255,80,60,0.4)';
+      ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke()}
+    // Head
+    var lx=pad+((data.length-1)/(c3data.length-1))*gw;
+    var ly=pad+gh-((data[data.length-1]-mn)/rng)*gh;
+    var p=2.5+Math.sin(t*6)*1.5;
+    ctx.fillStyle='rgba(68,255,136,0.12)';ctx.beginPath();ctx.arc(lx,ly,p+4,0,Math.PI*2);ctx.fill();
+    ctx.fillStyle='#44ff88';ctx.beginPath();ctx.arc(lx,ly,2,0,Math.PI*2);ctx.fill();
+    // RTP mini bar
+    ctx.fillStyle='rgba(68,255,136,0.15)';ctx.fillRect(pad,h-3,gw*0.5,2);
+    ctx.fillStyle='rgba(68,255,136,0.4)';
+    var rtpW=Math.max(0,Math.min(1,(data[data.length-1]-80)/40));
+    ctx.fillRect(pad,h-3,gw*rtpW,2);
+  }
+
   const start = performance.now();
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1163,6 +1210,7 @@
     drawHollow(t);
     drawTsp(t);
     drawCrash(t);
+    drawCrash3(t);
     if (!prefersReducedMotion) requestAnimationFrame(loop);
   }
 
