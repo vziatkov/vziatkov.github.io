@@ -348,6 +348,7 @@
         .art-yinyang { background: radial-gradient(circle at center, #111 0%, #000 70%); }
         .art-hollow { background: #050508; }
         .art-tsp { background: #050508; }
+        .art-crash { background: #0a0a0c; }
 
         @media (max-width: 480px) {
             .art-grid { grid-template-columns: 1fr; }
@@ -504,6 +505,15 @@
                     <div class="art-label">
                         <span class="art-name">TSP Solver — P vs NP</span>
                         <span class="art-sub">When networks race · shortest path through N cities</span>
+                    </div>
+                </a>
+
+                <a class="art-card art-crash" href="https://vziatkov.github.io/neuro/crash-engine.html" target="_blank" rel="noopener noreferrer">
+                    <canvas class="art-canvas" id="art-crash"></canvas>
+                    <span class="art-live" aria-label="Live demo">LIVE</span>
+                    <div class="art-label">
+                        <span class="art-name">Crash Engine v2</span>
+                        <span class="art-sub">Monte Carlo · drought + wave + RTP · engine obfuscated</span>
                     </div>
                 </a>
 
@@ -1064,6 +1074,80 @@
     }
   }
 
+  // Crash Engine — live balance curve that re-simulates
+  var crashData = [];
+  var crashPhase = 0;
+  var crashIdx = 0;
+  function crashSim() {
+    crashData = [];
+    var bal = 100, d = 0;
+    for (var i = 0; i < 200; i++) {
+      var r = Math.random();
+      var cr = Math.max(1, 0.985 / (1 - r));
+      if (d > 3) cr *= 1 + Math.log(d) * 0.15;
+      cr = Math.floor(cr * 100) / 100;
+      if (cr >= 2) { bal += 1; d = 0; } else { bal -= 1; d++; }
+      crashData.push(bal);
+    }
+    crashIdx = 0;
+  }
+  crashSim();
+
+  function drawCrash(t) {
+    var s = initCanvas('art-crash');
+    if (!s) return;
+    var ctx = s.ctx, w = s.w, h = s.h;
+    ctx.clearRect(0, 0, w, h);
+
+    // Reveal progressively
+    crashIdx = Math.min(crashData.length, crashIdx + 2);
+    if (crashIdx >= crashData.length) { crashPhase++; if (crashPhase % 60 === 0) crashSim(); }
+    var data = crashData.slice(0, crashIdx);
+    if (data.length < 2) return;
+
+    var mn = Math.min.apply(null, data), mx = Math.max.apply(null, data);
+    var rng = mx - mn || 1;
+    var pad = 8, gw = w - pad * 2, gh = h - pad * 2;
+
+    // Curve fill
+    ctx.beginPath();
+    for (var i = 0; i < data.length; i++) {
+      var x = pad + (i / (crashData.length - 1)) * gw;
+      var y = pad + gh - ((data[i] - mn) / rng) * gh;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    var lastX = pad + ((data.length - 1) / (crashData.length - 1)) * gw;
+    ctx.lineTo(lastX, pad + gh);
+    ctx.lineTo(pad, pad + gh);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(255,140,66,0.06)';
+    ctx.fill();
+
+    // Curve stroke
+    ctx.beginPath();
+    for (var i = 0; i < data.length; i++) {
+      var x = pad + (i / (crashData.length - 1)) * gw;
+      var y = pad + gh - ((data[i] - mn) / rng) * gh;
+      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.strokeStyle = 'rgba(255,140,66,0.8)';
+    ctx.lineWidth = 1.5;
+    ctx.stroke();
+
+    // Pulsing head dot
+    var headY = pad + gh - ((data[data.length-1] - mn) / rng) * gh;
+    var pulse = 3 + Math.sin(t * 4) * 1.5;
+    ctx.fillStyle = 'rgba(255,140,66,0.2)';
+    ctx.beginPath(); ctx.arc(lastX, headY, pulse + 3, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ff8c42';
+    ctx.beginPath(); ctx.arc(lastX, headY, 2, 0, Math.PI * 2); ctx.fill();
+
+    // Balance text
+    ctx.fillStyle = 'rgba(255,140,66,0.4)';
+    ctx.font = '9px Inter, sans-serif';
+    ctx.fillText(data[data.length-1].toFixed(0), lastX + 6, headY + 3);
+  }
+
   const start = performance.now();
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1078,6 +1162,7 @@
     drawYinYang(t);
     drawHollow(t);
     drawTsp(t);
+    drawCrash(t);
     if (!prefersReducedMotion) requestAnimationFrame(loop);
   }
 
