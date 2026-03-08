@@ -350,6 +350,7 @@
         .art-tsp { background: #050508; }
         .art-crash { background: #0a0a0c; }
         .art-crash3 { background: #0a0a0c; }
+        .art-crash4 { background: #0a0a0c; }
 
         @media (max-width: 480px) {
             .art-grid { grid-template-columns: 1fr; }
@@ -524,6 +525,15 @@
                     <div class="art-label">
                         <span class="art-name">Crash Engine v3 — Live</span>
                         <span class="art-sub">RTP corridor 94–104% · animated sim · win/loss color flow</span>
+                    </div>
+                </a>
+
+                <a class="art-card art-crash4" href="https://vziatkov.github.io/neuro/crash-engine-v4.html" target="_blank" rel="noopener noreferrer">
+                    <canvas class="art-canvas" id="art-crash4"></canvas>
+                    <span class="art-live" aria-label="Live demo">🔊 LIVE</span>
+                    <div class="art-label">
+                        <span class="art-name">Crash Engine v4 — Audio</span>
+                        <span class="art-sub">Procedural sound · pentatonic groove · heartbeat drought · 0 audio files</span>
                     </div>
                 </a>
 
@@ -1195,6 +1205,58 @@
     ctx.fillRect(pad,h-3,gw*rtpW,2);
   }
 
+  // Crash v4 — waveform visualization + balance curve
+  var c4data=[],c4idx=0,c4d=0;
+  function c4reset(){c4data=[];c4idx=0;c4d=0;var b=100;
+    for(var i=0;i<300;i++){var r=Math.random(),cr=Math.max(1,0.965/(1-r));
+      if(c4d>4)cr*=1+Math.log(c4d)*0.1;cr=Math.floor(cr*100)/100;
+      if(cr>=2){b+=1;c4d=0}else{b-=1;c4d++}c4data.push(b)}c4idx=0}
+  c4reset();
+
+  function drawCrash4(t){
+    var s=initCanvas('art-crash4');if(!s)return;
+    var ctx=s.ctx,w=s.w,h=s.h;ctx.clearRect(0,0,w,h);
+    c4idx=Math.min(c4data.length,c4idx+2);
+    if(c4idx>=c4data.length&&Math.floor(t*10)%90===0)c4reset();
+    var data=c4data.slice(0,c4idx);if(data.length<2)return;
+    var mn=Math.min.apply(null,data),mx=Math.max.apply(null,data);
+    var rng=mx-mn||1,pad=6,gw=w-pad*2,gh=h-pad*2;
+
+    // Sound wave background — sine waves representing audio
+    ctx.globalAlpha=0.06;
+    for(var wave=0;wave<3;wave++){
+      ctx.strokeStyle=wave===0?'#44ff88':wave===1?'#ff8c42':'#4488ff';
+      ctx.lineWidth=1;ctx.beginPath();
+      var freq=[3,5,7][wave],amp=[0.15,0.1,0.08][wave];
+      for(var i=0;i<w;i++){
+        var y=h/2+Math.sin((i/w)*Math.PI*2*freq+t*(2+wave))*gh*amp;
+        if(i===0)ctx.moveTo(i,y);else ctx.lineTo(i,y)}
+      ctx.stroke()}
+    ctx.globalAlpha=1;
+
+    // Balance curve — green/red
+    for(var i=1;i<data.length;i++){
+      var x0=pad+((i-1)/(c4data.length-1))*gw;
+      var x1=pad+(i/(c4data.length-1))*gw;
+      var y0=pad+gh-((data[i-1]-mn)/rng)*gh;
+      var y1=pad+gh-((data[i]-mn)/rng)*gh;
+      ctx.strokeStyle=data[i]>data[i-1]?'rgba(68,255,136,0.7)':'rgba(255,80,60,0.5)';
+      ctx.lineWidth=1.5;ctx.beginPath();ctx.moveTo(x0,y0);ctx.lineTo(x1,y1);ctx.stroke()}
+
+    // Pulsing head with audio rings
+    var lx=pad+((data.length-1)/(c4data.length-1))*gw;
+    var ly=pad+gh-((data[data.length-1]-mn)/rng)*gh;
+    for(var ring=0;ring<3;ring++){
+      var rr=6+ring*5+Math.sin(t*4+ring)*3;
+      ctx.strokeStyle='rgba(68,255,136,'+(0.08-ring*0.02)+')';
+      ctx.lineWidth=1;ctx.beginPath();ctx.arc(lx,ly,rr,0,Math.PI*2);ctx.stroke()}
+    ctx.fillStyle='#44ff88';ctx.beginPath();ctx.arc(lx,ly,2,0,Math.PI*2);ctx.fill();
+
+    // Speaker icon hint
+    ctx.fillStyle='rgba(255,255,255,0.08)';ctx.font='10px sans-serif';
+    ctx.fillText('♪',w-14,12);
+  }
+
   const start = performance.now();
   const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -1211,6 +1273,7 @@
     drawTsp(t);
     drawCrash(t);
     drawCrash3(t);
+    drawCrash4(t);
     if (!prefersReducedMotion) requestAnimationFrame(loop);
   }
 
